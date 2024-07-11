@@ -1,0 +1,9 @@
+<launch>
+  <node pkg="joy" exec="joy_node" name="joycon" output="screen" emulate_tty="true"/>
+
+  <node pkg="bluerov2_interface" exec="node.py" name="bluerov2_node" namespace="bluerov2" 
+  	output="screen" emulate_tty="true"/>
+  <node pkg="bluerov2_interface" exec="teleop.py" name="bluerov2_teleop" namespace="bluerov2" 
+  	output="screen" emulate_tty="true"/>  
+  	
+</launch>
