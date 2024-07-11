@@ -1,64 +1,34 @@
-# BlueRov-ROS-playground
-Scripts to help BlueRov integration with ROS.
-What is possible ?
-- Video streaming capture with opencv
-- Read and write over mavlink protocol with MAVROS
-- Joystick interaction
+# BlueROV2 ROS2 Driver Barebones Interface
+- Originally adapted from https://github.com/patrickelectric/bluerov_ros_playground
+- Modularized and re-written for ROS2. 
+- Barebones driver only, modular and user-readable to add your own snippets. 
 
-## Getting Started
+## Requirements
+- ROS2
+- Pymavlink 
+
+## Topics
+### Publishers:
+- /bluerov2/altitude
+- /bluerov2/battery
+- /bluerov2/bottle_pressure
+- /bluerov2/imu
+- /bluerov2/odometry
+- /bluerov2/raw
+
+### Subscribers
+- /bluerov2/heartbeat
+- /bluerov2/set_pwm
 
 ### Installation ###
- 1. Go to your ROS package source directory:
-    - `$ cd ros_workspace_path/src`
- 2. Clone this project.
-    - `$ git clone https://github.com/patrickelectric/bluerov2_interface`
- 3. Go back to your ROS workspace:
-    - `$ cd ../`
- 4. Build and install it:
-    - `$ catkin_make --pkg bluerov2_interface`
-    - if using ROS from source:
-        - `$./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --pkg bluerov2_interface`
- 5. Reload your ROS env.
-    - bash: `$ source devel/setup.sh`
-    - zsh: `$ source devel/setup.sh`
+1. Clone this project in your colcon_ws/src.
+   - `$ git clone https://github.com/bvibhav/bluerov2_interface`
+2. Go back to your ROS Colcon workspace:
+3. Build  it:
+   - `colcon build --event-handlers console_direct+ --cmake-args --symlink-install --packages-select bluerov2_interface`
+3. Reload your colcon workspace.
 
 ## Running ##
-
-## Software Layer Diagram ##
-
-<pre>
-                      +-----------------------+         +------------------------+
-                      |     <b>Raspberry Pi</b>      |         |    <b>Topside Commputer</b>   |
-                      |    <b>ip 192.168.2.2</b>     |         |     <b>ip 192.168.2.1</b>     |
-                      |                       |         |                        |
-+-------+  Telemetry  | +-------------------+ |         |                        |
-|Pixhawk<-------------->USB         <b>MAVProxy</b>| |         |                        |
-+-------+    Pilot    | +                   + |         | +--------------------+ |
-            Control   | |            udpbcast<----------->:14550         <b>MAVROS</b>| |
-                      | +-------------------+ |  Pilot  | |(UDP)               | |
-                      |                       | Control | |                    | |
-                      | +-------------------+ |         | |       (ROS)        | |
-+---------+           | CSI+2       <b>raspivid</b>| |         | +------+/mavros+-----+ |
-|Raspberry+------------>camera              | |         |           ^            |
-| Camera  |           | port                | |         |           |            |
-+---------+           | +                   | |         | +---------v----------+ |
-                      | |                   | |         | |subs.py      pubs.py| |
-                      | +------------+stdout+ |         | |                    | |
-                      |                  +    |         | |                    | |
-                      |             Raw  |    |         | |                    | |
-                      |             H264 |    |         | |                    | |
-                      |                  v    |         | |      <b>user.py</b>       | |
-                      | +------------+ fdsrc+ |         | |                    | |
-                      | |<b>gstreamer</b>          | |         | |                    | |
-                      | |                   + |         | :5600 video.py       | |
-                      | |             udpsink+----------->(UDP)                | |
-                      | +-------------------+ |  Video  | +---------^----------+ |
-                      |                       | Stream  |           |            |
-                      +-----------------------+         |           +            |
-                                                        | +--------/joy--------+ |
-                                                        | |<b>joy</b>     (ROS)       | |         +--------+
-                                                        | |                  USB<----------+Joystick|
-                                                        | +--------------------+ |  Pilot  +--------+
-                                                        |                        | Control
-                                                        +------------------------+
-</pre>
+```
+ros2 launch bluerov2_interface bluerov2_launch.xml
+```
